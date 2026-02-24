@@ -12,6 +12,7 @@ import com.v2ray.ang.AppConfig.GEOIP_PRIVATE
 import com.v2ray.ang.AppConfig.GEOSITE_PRIVATE
 import com.v2ray.ang.AppConfig.TAG_DIRECT
 import com.v2ray.ang.AppConfig.VPN
+import com.v2ray.ang.BuiltinSubscriptions
 import com.v2ray.ang.dto.ProfileItem
 import com.v2ray.ang.dto.RulesetItem
 import com.v2ray.ang.dto.SubscriptionItem
@@ -40,6 +41,42 @@ object SettingsManager {
         initRoutingRulesets(context)
         migrateServerListToSubscriptions()
         migrateHysteria2PinSHA256()
+        loadBuiltinSubscriptions(context)
+    }
+
+    /**
+     * Loads built-in subscriptions configured in BuiltinSubscriptions.kt.
+     * These subscriptions are added on app start if they don't already exist.
+     * @param context The application context.
+     */
+    private fun loadBuiltinSubscriptions(context: Context) {
+        val builtinSubs = BuiltinSubscriptions.BUILTIN_SUBSCRIPTIONS
+        if (builtinSubs.isEmpty()) {
+            return
+        }
+
+        val existingSubs = MmkvManager.decodeSubscriptions()
+        val existingUrls = existingSubs.map { it.subscription.url }.toSet()
+
+        for (subItem in builtinSubs) {
+            if (subItem.url.isBlank()) {
+                continue
+            }
+
+            val existingSub = existingSubs.find { it.subscription.url == subItem.url }
+            
+            if (existingSub == null) {
+                // Add new subscription
+                val key = Utils.getUuid()
+                MmkvManager.encodeSubscription(key, subItem)
+                Log.i(AppConfig.TAG, "Added built-in subscription: ${subItem.remarks}")
+            } else if (BuiltinSubscriptions.FORCE_UPDATE_EXISTING) {
+                // Update existing subscription settings
+                subItem.lastUpdated = existingSub.subscription.lastUpdated
+                MmkvManager.encodeSubscription(existingSub.guid, subItem)
+                Log.i(AppConfig.TAG, "Updated built-in subscription: ${subItem.remarks}")
+            }
+        }
     }
 
     /**
