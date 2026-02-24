@@ -31,13 +31,20 @@ object BuiltinSubscriptions {
      */
     val BUILTIN_SUBSCRIPTIONS: List<SubscriptionItem> = listOf(
         // Example subscription (uncomment and modify as needed):
-        // SubscriptionItem(
-        //     remarks = "My VPN Subscription",
-        //     url = "https://your-subscription-url-here",
-        //     enabled = true,
-        //     autoUpdate = true,
-        //     allowInsecureUrl = false
-        // ),
+         SubscriptionItem(
+             remarks = "EtoNeYa",
+             url = "https://tseya.a9fm.site/whitelist",
+             enabled = true,
+             autoUpdate = true,
+             allowInsecureUrl = false
+         ),
+        SubscriptionItem(
+             remarks = "WL RUS",
+             url = "https://wlrus.lol/confs/selected.txt",
+             enabled = true,
+             autoUpdate = true,
+             allowInsecureUrl = false
+         ),
         
         // Add more subscriptions here...
     )
