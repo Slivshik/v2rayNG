@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.v2ray.ang"
+    namespace = "com.wlrus.gl"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "com.wlrus.gl"
         minSdk = 24
         targetSdk = 36
         versionCode = 711
-        versionName = "2.0.11"
+        versionName = "0.0.1"
         multiDexEnabled = true
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
