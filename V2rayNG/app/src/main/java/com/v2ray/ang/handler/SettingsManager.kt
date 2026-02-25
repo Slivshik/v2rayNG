@@ -20,6 +20,7 @@ import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.enums.Language
 import com.v2ray.ang.enums.RoutingType
+import com.v2ray.ang.enums.RulesetMode
 import com.v2ray.ang.enums.VpnInterfaceAddressConfig
 import com.v2ray.ang.handler.MmkvManager.decodeAllServerList
 import com.v2ray.ang.handler.MmkvManager.decodeServerConfig
@@ -42,6 +43,54 @@ object SettingsManager {
         migrateServerListToSubscriptions()
         migrateHysteria2PinSHA256()
         loadBuiltinSubscriptions(context)
+        applyRulesetModeOnStart(context)
+    }
+
+    /**
+     * Applies the saved ruleset mode on app start.
+     * This sets up DNS and routing rulesets based on user's mode selection.
+     * @param context The application context.
+     */
+    private fun applyRulesetModeOnStart(context: Context) {
+        val savedModeIndex = MmkvManager.decodeSettingsString(AppConfig.PREF_RULESET_MODE)
+        if (savedModeIndex.isNullOrEmpty()) {
+            // First run: apply default mode
+            applyRulesetMode(context, RulesetMode.DEFAULT)
+        }
+    }
+
+    /**
+     * Applies a ruleset mode, updating DNS settings and routing rulesets.
+     * @param context The application context.
+     * @param mode The ruleset mode to apply.
+     */
+    fun applyRulesetMode(context: Context, mode: RulesetMode) {
+        // Save the mode selection
+        MmkvManager.encodeSettings(AppConfig.PREF_RULESET_MODE, mode.ordinal.toString())
+
+        // Apply DNS settings
+        MmkvManager.encodeSettings(AppConfig.PREF_REMOTE_DNS, mode.remoteDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_DOMESTIC_DNS, mode.domesticDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_VPN_DNS, mode.vpnDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_DELAY_TEST_URL, mode.testUrl)
+
+        // Reset routing rulesets to the mode's preset
+        resetRoutingRulesetsFromPresets(context, mode.routingType.ordinal)
+
+        Log.i(AppConfig.TAG, "Applied ruleset mode: ${mode.name}")
+    }
+
+    /**
+     * Gets the currently selected ruleset mode.
+     * @return The current RulesetMode.
+     */
+    fun getRulesetMode(): RulesetMode {
+        val savedModeIndex = MmkvManager.decodeSettingsString(AppConfig.PREF_RULESET_MODE)
+        return if (savedModeIndex.isNullOrEmpty()) {
+            RulesetMode.DEFAULT
+        } else {
+            RulesetMode.fromOrdinal(savedModeIndex.toIntOrNull() ?: 0)
+        }
     }
 
     /**

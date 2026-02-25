@@ -5,7 +5,9 @@ enum class RoutingType(val fileName: String) {
     BLACK("custom_routing_black"),
     GLOBAL("custom_routing_global"),
     WHITE_IRAN("custom_routing_white_iran"),
-    WHITE_RUSSIA("custom_routing_white_russia");
+    WHITE_RUSSIA("custom_routing_white_russia"),
+    WHITE_RU("custom_routing_whitelist_ru"),
+    BLOCK("custom_routing_block");
 
     companion object {
         fun fromIndex(index: Int): RoutingType {
@@ -15,7 +17,9 @@ enum class RoutingType(val fileName: String) {
                 2 -> GLOBAL
                 3 -> WHITE_IRAN
                 4 -> WHITE_RUSSIA
-                else -> WHITE
+                5 -> WHITE_RU
+                6 -> BLOCK
+                else -> WHITE_RU  // Default to Russia whitelist
             }
         }
     }

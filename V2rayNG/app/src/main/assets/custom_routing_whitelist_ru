@@ -1,0 +1,181 @@
+[
+  {
+    "remarks": "Block QUIC/UDP443",
+    "outboundTag": "block",
+    "port": "443",
+    "network": "udp"
+  },
+  {
+    "remarks": "Bypass BitTorrent",
+    "outboundTag": "direct",
+    "protocol": [
+      "bittorrent"
+    ]
+  },
+  {
+    "remarks": "Proxy Google Services",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:google"
+    ]
+  },
+  {
+    "remarks": "Proxy YouTube",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:youtube"
+    ]
+  },
+  {
+    "remarks": "Proxy Instagram",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:instagram"
+    ]
+  },
+  {
+    "remarks": "Proxy Facebook",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:facebook"
+    ]
+  },
+  {
+    "remarks": "Proxy Twitter/X",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:twitter"
+    ]
+  },
+  {
+    "remarks": "Proxy Telegram",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:telegram"
+    ]
+  },
+  {
+    "remarks": "Proxy Discord",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:discord.com",
+      "domain:discord.gg",
+      "domain:discordapp.com",
+      "domain:discordapp.net"
+    ]
+  },
+  {
+    "remarks": "Proxy Netflix",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:netflix"
+    ]
+  },
+  {
+    "remarks": "Proxy OpenAI/ChatGPT",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:openai.com",
+      "domain:chatgpt.com",
+      "domain:ai.com",
+      "domain:sora.com"
+    ]
+  },
+  {
+    "remarks": "Proxy GitHub",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:github.com",
+      "domain:githubusercontent.com",
+      "domain:githubassets.com",
+      "domain:github.dev"
+    ]
+  },
+  {
+    "remarks": "Proxy Blocked Sites",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:gfw",
+      "geosite:greatfire"
+    ]
+  },
+  {
+    "remarks": "Proxy Foreign DNS IPs",
+    "outboundTag": "proxy",
+    "ip": [
+      "1.1.1.1",
+      "1.0.0.1",
+      "8.8.8.8",
+      "8.8.4.4",
+      "208.67.222.222",
+      "208.67.220.220",
+      "9.9.9.9",
+      "149.112.112.112"
+    ]
+  },
+  {
+    "remarks": "Bypass LAN IP",
+    "outboundTag": "direct",
+    "ip": [
+      "geoip:private"
+    ]
+  },
+  {
+    "remarks": "Bypass LAN Domain",
+    "outboundTag": "direct",
+    "domain": [
+      "geosite:private"
+    ]
+  },
+  {
+    "remarks": "Bypass Russia DNS (Yandex)",
+    "outboundTag": "direct",
+    "ip": [
+      "77.88.8.8",
+      "77.88.8.1",
+      "77.88.8.88",
+      "77.88.8.2",
+      "77.88.8.7",
+      "77.88.8.3",
+      "2a02:6b8::feed:0ff",
+      "2a02:6b8:0:1::feed:0ff"
+    ]
+  },
+  {
+    "remarks": "Bypass Russia IP",
+    "outboundTag": "direct",
+    "ip": [
+      "geoip:ru"
+    ]
+  },
+  {
+    "remarks": "Bypass Russia Domain",
+    "outboundTag": "direct",
+    "domain": [
+      "geosite:category-ru",
+      "domain:yandex.ru",
+      "domain:yandex.net",
+      "domain:yandex.com",
+      "domain:vk.com",
+      "domain:vkontakte.ru",
+      "domain:mail.ru",
+      "domain:ok.ru",
+      "domain:odnoklassniki.ru",
+      "domain:rambler.ru",
+      "domain:gosuslugi.ru",
+      "domain:sberbank.ru",
+      "domain:tinkoff.ru",
+      "domain:vtb.ru",
+      "domain:gazprom.ru",
+      "domain:lenta.ru",
+      "domain:ria.ru",
+      "domain:rbc.ru",
+      "domain:rt.com"
+    ]
+  },
+  {
+    "remarks": "Final Direct",
+    "port": "0-65535",
+    "outboundTag": "direct"
+  }
+]
