@@ -8,7 +8,7 @@ on:
         type: string
   push:
     branches:
-      - cto/please-make-i-will-can-configure-in-code-subscriptions-which
+      - master
 
 jobs:
   build:
@@ -83,20 +83,40 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
+    - name: Check if signing secrets are available
+      id: check_secrets
+      run: |
+        if [ -n "${{ secrets.APP_KEYSTORE_BASE64 }}" ]; then
+          echo "has_secrets=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_secrets=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Decode Keystore
       uses: timheuer/base64-to-file@v1.2.4
       id: android_keystore
+      if: steps.check_secrets.outputs.has_secrets == 'true'
       with:
         fileName: "android_keystore.jks"
         encodedString: ${{ secrets.APP_KEYSTORE_BASE64 }}
 
-    - name: Build APK
+    - name: Build APK (Signed)
+      if: steps.check_secrets.outputs.has_secrets == 'true'
       run: |
         cd ${{ github.workspace }}/V2rayNG
         echo "sdk.dir=${ANDROID_HOME}" > local.properties
         chmod 755 gradlew
         ./gradlew licenseFdroidReleaseReport
         ./gradlew assembleRelease -Pandroid.injected.signing.store.file=${{ steps.android_keystore.outputs.filePath }} -Pandroid.injected.signing.store.password=${{ secrets.APP_KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.APP_KEYSTORE_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.APP_KEY_PASSWORD }}
+    
+    - name: Build APK (Unsigned)
+      if: steps.check_secrets.outputs.has_secrets != 'true'
+      run: |
+        cd ${{ github.workspace }}/V2rayNG
+        echo "sdk.dir=${ANDROID_HOME}" > local.properties
+        chmod 755 gradlew
+        ./gradlew licenseFdroidReleaseReport
+        ./gradlew assembleRelease
     
     - name: Upload arm64-v8a APK
       uses: actions/upload-artifact@v6

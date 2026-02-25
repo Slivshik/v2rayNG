@@ -13,8 +13,10 @@ import com.v2ray.ang.AngApplication
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.VPN
 import com.v2ray.ang.R
+import com.v2ray.ang.enums.RulesetMode
 import com.v2ray.ang.extension.toLongEx
 import com.v2ray.ang.handler.MmkvManager
+import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.handler.SubscriptionUpdater
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
 import com.v2ray.ang.util.Utils
@@ -51,6 +53,7 @@ class SettingsActivity : BaseActivity() {
         private val autoUpdateCheck by lazy { findPreference<CheckBoxPreference>(AppConfig.SUBSCRIPTION_AUTO_UPDATE) }
         private val autoUpdateInterval by lazy { findPreference<EditTextPreference>(AppConfig.SUBSCRIPTION_AUTO_UPDATE_INTERVAL) }
         private val mode by lazy { findPreference<ListPreference>(AppConfig.PREF_MODE) }
+        private val rulesetMode by lazy { findPreference<ListPreference>(AppConfig.PREF_RULESET_MODE) }
 
         private val hevTunLogLevel by lazy { findPreference<ListPreference>(AppConfig.PREF_HEV_TUNNEL_LOGLEVEL) }
         private val hevTunRwTimeout by lazy { findPreference<EditTextPreference>(AppConfig.PREF_HEV_TUNNEL_RW_TIMEOUT) }
@@ -107,6 +110,23 @@ class SettingsActivity : BaseActivity() {
                 true
             }
             mode?.dialogLayoutResource = R.layout.preference_with_help_link
+
+            rulesetMode?.setOnPreferenceChangeListener { pref, newValue ->
+                val valueStr = newValue.toString()
+                (pref as? ListPreference)?.let { lp ->
+                    val idx = lp.findIndexOfValue(valueStr)
+                    lp.summary = if (idx >= 0) lp.entries[idx] else valueStr
+                }
+                // Apply the ruleset mode
+                val modeOrdinal = valueStr.toIntOrNull() ?: 0
+                val selectedMode = RulesetMode.fromOrdinal(modeOrdinal)
+                context?.let { ctx ->
+                    SettingsManager.applyRulesetMode(ctx, selectedMode)
+                    // Update DNS preference summaries
+                    updateDnsSummaries()
+                }
+                true
+            }
 
             useHevTun?.setOnPreferenceChangeListener { _, newValue ->
                 updateHevTunSettings(newValue as Boolean)
@@ -261,6 +281,27 @@ class SettingsActivity : BaseActivity() {
         private fun updateHevTunSettings(enabled: Boolean) {
             hevTunLogLevel?.isEnabled = enabled
             hevTunRwTimeout?.isEnabled = enabled
+        }
+
+        private fun updateDnsSummaries() {
+            // Update DNS preference summaries after ruleset mode change
+            vpnDns?.text = MmkvManager.decodeSettingsString(AppConfig.PREF_VPN_DNS)
+            vpnDns?.summary = vpnDns?.text
+            
+            findPreference<EditTextPreference>(AppConfig.PREF_REMOTE_DNS)?.let { pref ->
+                pref.text = MmkvManager.decodeSettingsString(AppConfig.PREF_REMOTE_DNS)
+                pref.summary = pref.text
+            }
+            
+            findPreference<EditTextPreference>(AppConfig.PREF_DOMESTIC_DNS)?.let { pref ->
+                pref.text = MmkvManager.decodeSettingsString(AppConfig.PREF_DOMESTIC_DNS)
+                pref.summary = pref.text
+            }
+            
+            findPreference<EditTextPreference>(AppConfig.PREF_DELAY_TEST_URL)?.let { pref ->
+                pref.text = MmkvManager.decodeSettingsString(AppConfig.PREF_DELAY_TEST_URL)
+                pref.summary = pref.text
+            }
         }
     }
 

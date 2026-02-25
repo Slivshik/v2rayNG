@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">v2rayNG</string>
+    <string name="app_name" translatable="false">WLRUS (Gl Proxy)</string>
     <string name="app_widget_name">Switch</string>
     <string name="app_tile_name">Switch</string>
     <string name="app_tile_first_use">First use of this feature, please use the app to add server</string>
@@ -406,7 +406,23 @@
         <item>Global</item>
         <item>Iran Whitelist</item>
         <item>Russia Whitelist</item>
+        <item>Russia Whitelist (Yandex DNS)</item>
+        <item>AdBlock Mode</item>
     </string-array>
+
+    <string-array name="ruleset_mode_entries">
+        <item>@string/ruleset_mode_whitelist_ru</item>
+        <item>@string/ruleset_mode_block</item>
+    </string-array>
+
+    <!-- Ruleset Mode Selection -->
+    <string name="title_ruleset_mode">Routing Mode</string>
+    <string name="ruleset_mode_whitelist_ru">Whitelist (Russia)</string>
+    <string name="ruleset_mode_block">AdBlock Mode</string>
+    <string name="ruleset_mode_description_whitelist_ru">Russian sites go direct, Yandex DNS for domestic, Cloudflare for proxy</string>
+    <string name="ruleset_mode_description_block">Block ads, malware, phishing. Google/OpenDNS for all DNS queries</string>
+    <string name="ruleset_mode_applied">Mode applied</string>
+    <string name="ruleset_mode_select_on_start">Select mode on start</string>
 
     <string-array name="vpn_bypass_lan">
         <item>Follow config</item>

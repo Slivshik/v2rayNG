@@ -75,6 +75,19 @@ object AppConfig {
     const val PREF_AUTO_REMOVE_INVALID_AFTER_TEST = "pref_auto_remove_invalid_after_test"
     const val PREF_AUTO_SORT_AFTER_TEST = "pref_auto_sort_after_test"
 
+    /** Ruleset mode preference */
+    const val PREF_RULESET_MODE = "pref_ruleset_mode"
+
+    /** DNS presets for different modes */
+    // Whitelist mode (Russia-friendly): Yandex DNS for domestic, Cloudflare for proxy
+    const val DNS_YANDEX = "77.88.8.8"
+    const val DNS_YANDEX_SAFE = "77.88.8.88"
+    const val DNS_OPENDNS = "208.67.222.222"
+    const val DNS_OPENDNS_FAMILY = "208.67.220.123"
+    
+    /** Test URLs */
+    const val TEST_URL_GSTATIC = "https://www.gstatic.com/generate_204"
+
     /** Cache keys. */
     const val CACHE_SUBSCRIPTION_ID = "cache_subscription_id"
 
@@ -161,7 +174,7 @@ object AppConfig {
 
     /** Notification channel IDs and names. */
     const val RAY_NG_CHANNEL_ID = "RAY_NG_M_CH_ID"
-    const val RAY_NG_CHANNEL_NAME = "v2rayNG Background Service"
+    const val RAY_NG_CHANNEL_NAME = "WLRUS (Gl Proxy) Background Service"
     const val SUBSCRIPTION_UPDATE_CHANNEL = "subscription_update_channel"
     const val SUBSCRIPTION_UPDATE_CHANNEL_NAME = "Subscription Update Service"
 
@@ -216,6 +229,7 @@ object AppConfig {
     val DNS_GOOGLE_ADDRESSES = arrayListOf("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")
     val DNS_QUAD9_ADDRESSES = arrayListOf("9.9.9.9", "149.112.112.112", "2620:fe::fe", "2620:fe::9")
     val DNS_YANDEX_ADDRESSES = arrayListOf("77.88.8.8", "77.88.8.1", "2a02:6b8::feed:0ff", "2a02:6b8:0:1::feed:0ff")
+    val DNS_OPENDNS_ADDRESSES = arrayListOf("208.67.222.222", "208.67.220.220", "2620:119:35::35", "2620:119:53::53")
 
     //minimum list https://serverfault.com/a/304791
     val ROUTED_IP_LIST = arrayListOf(

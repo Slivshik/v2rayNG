@@ -12,6 +12,7 @@ import com.v2ray.ang.AppConfig.GEOIP_PRIVATE
 import com.v2ray.ang.AppConfig.GEOSITE_PRIVATE
 import com.v2ray.ang.AppConfig.TAG_DIRECT
 import com.v2ray.ang.AppConfig.VPN
+import com.v2ray.ang.BuiltinSubscriptions
 import com.v2ray.ang.dto.ProfileItem
 import com.v2ray.ang.dto.RulesetItem
 import com.v2ray.ang.dto.SubscriptionItem
@@ -19,6 +20,7 @@ import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.enums.Language
 import com.v2ray.ang.enums.RoutingType
+import com.v2ray.ang.enums.RulesetMode
 import com.v2ray.ang.enums.VpnInterfaceAddressConfig
 import com.v2ray.ang.handler.MmkvManager.decodeAllServerList
 import com.v2ray.ang.handler.MmkvManager.decodeServerConfig
@@ -40,6 +42,90 @@ object SettingsManager {
         initRoutingRulesets(context)
         migrateServerListToSubscriptions()
         migrateHysteria2PinSHA256()
+        loadBuiltinSubscriptions(context)
+        applyRulesetModeOnStart(context)
+    }
+
+    /**
+     * Applies the saved ruleset mode on app start.
+     * This sets up DNS and routing rulesets based on user's mode selection.
+     * @param context The application context.
+     */
+    private fun applyRulesetModeOnStart(context: Context) {
+        val savedModeIndex = MmkvManager.decodeSettingsString(AppConfig.PREF_RULESET_MODE)
+        if (savedModeIndex.isNullOrEmpty()) {
+            // First run: apply default mode
+            applyRulesetMode(context, RulesetMode.DEFAULT)
+        }
+    }
+
+    /**
+     * Applies a ruleset mode, updating DNS settings and routing rulesets.
+     * @param context The application context.
+     * @param mode The ruleset mode to apply.
+     */
+    fun applyRulesetMode(context: Context, mode: RulesetMode) {
+        // Save the mode selection
+        MmkvManager.encodeSettings(AppConfig.PREF_RULESET_MODE, mode.ordinal.toString())
+
+        // Apply DNS settings
+        MmkvManager.encodeSettings(AppConfig.PREF_REMOTE_DNS, mode.remoteDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_DOMESTIC_DNS, mode.domesticDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_VPN_DNS, mode.vpnDns)
+        MmkvManager.encodeSettings(AppConfig.PREF_DELAY_TEST_URL, mode.testUrl)
+
+        // Reset routing rulesets to the mode's preset
+        resetRoutingRulesetsFromPresets(context, mode.routingType.ordinal)
+
+        Log.i(AppConfig.TAG, "Applied ruleset mode: ${mode.name}")
+    }
+
+    /**
+     * Gets the currently selected ruleset mode.
+     * @return The current RulesetMode.
+     */
+    fun getRulesetMode(): RulesetMode {
+        val savedModeIndex = MmkvManager.decodeSettingsString(AppConfig.PREF_RULESET_MODE)
+        return if (savedModeIndex.isNullOrEmpty()) {
+            RulesetMode.DEFAULT
+        } else {
+            RulesetMode.fromOrdinal(savedModeIndex.toIntOrNull() ?: 0)
+        }
+    }
+
+    /**
+     * Loads built-in subscriptions configured in BuiltinSubscriptions.kt.
+     * These subscriptions are added on app start if they don't already exist.
+     * @param context The application context.
+     */
+    private fun loadBuiltinSubscriptions(context: Context) {
+        val builtinSubs = BuiltinSubscriptions.BUILTIN_SUBSCRIPTIONS
+        if (builtinSubs.isEmpty()) {
+            return
+        }
+
+        val existingSubs = MmkvManager.decodeSubscriptions()
+        val existingUrls = existingSubs.map { it.subscription.url }.toSet()
+
+        for (subItem in builtinSubs) {
+            if (subItem.url.isBlank()) {
+                continue
+            }
+
+            val existingSub = existingSubs.find { it.subscription.url == subItem.url }
+            
+            if (existingSub == null) {
+                // Add new subscription
+                val key = Utils.getUuid()
+                MmkvManager.encodeSubscription(key, subItem)
+                Log.i(AppConfig.TAG, "Added built-in subscription: ${subItem.remarks}")
+            } else if (BuiltinSubscriptions.FORCE_UPDATE_EXISTING) {
+                // Update existing subscription settings
+                subItem.lastUpdated = existingSub.subscription.lastUpdated
+                MmkvManager.encodeSubscription(existingSub.guid, subItem)
+                Log.i(AppConfig.TAG, "Updated built-in subscription: ${subItem.remarks}")
+            }
+        }
     }
 
     /**

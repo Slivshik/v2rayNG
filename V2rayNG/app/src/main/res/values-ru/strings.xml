@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_widget_name">v2rayNG</string>
-    <string name="app_tile_name">v2rayNG</string>
+    <string name="app_widget_name">WLRUS</string>
+    <string name="app_tile_name">WLRUS</string>
     <string name="app_tile_first_use">Первое использование этой функции, пожалуйста, используйте приложение, чтобы добавить сервер</string>
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
@@ -400,7 +400,18 @@
         <item>Общие</item>
         <item>Белый список Ирана</item>
         <item>Белый список России</item>
+        <item>Белый список RU (Яндекс DNS)</item>
+        <item>Блокировка рекламы</item>
     </string-array>
+
+    <!-- Ruleset Mode Selection -->
+    <string name="title_ruleset_mode">Режим маршрутизации</string>
+    <string name="ruleset_mode_whitelist_ru">Белый список (Россия)</string>
+    <string name="ruleset_mode_block">Блокировка рекламы</string>
+    <string name="ruleset_mode_description_whitelist_ru">Российские сайты напрямую, Яндекс DNS для доменных, Cloudflare для прокси</string>
+    <string name="ruleset_mode_description_block">Блокировка рекламы и вредоносных сайтов, Google/OpenDNS для всех запросов</string>
+    <string name="ruleset_mode_applied">Режим применён</string>
+    <string name="ruleset_mode_select_on_start">Выбрать режим при запуске</string>
 
     <string-array name="vpn_bypass_lan">
         <item>Как в профиле</item>
