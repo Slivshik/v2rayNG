@@ -8,7 +8,7 @@ on:
         type: string
   push:
     branches:
-      - master
+      - cto/please-make-i-will-can-configure-in-code-subscriptions-which
 
 jobs:
   build:
